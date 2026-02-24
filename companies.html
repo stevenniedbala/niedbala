@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Niedbala Companies | Companies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="page-companies" id="top">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html" aria-label="Niedbala Companies Home">
+        <span class="logo-text">Niedbala</span>
+      </a>
+
+      <button class="nav-toggle" aria-expanded="false" aria-controls="site-navigation" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="site-nav" id="site-navigation">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link is-active" href="companies.html">Companies</a>
+        <a class="nav-link" href="about.html">About</a>
+        <a class="nav-link" href="#">Investors</a>
+
+        <a class="btn btn-inline contact-trigger" href="#contact-modal">
+          Get in touch
+          <img src="https://cdn.prod.website-files.com/5f10771cbfea70224f1ce526/5f10771cbfea70751f1ce565_circle-arrow-right.svg" alt="">
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section page-heading-section">
+      <div class="container">
+        <h1>We own some wonderful businesses.</h1>
+      </div>
+    </section>
+
+    <section class="section companies-grid-section">
+      <div class="container">
+        <div class="companies-grid" data-companies-grid></div>
+      </div>
+    </section>
+
+    <section class="section scout-section">
+      <div class="container scout-layout">
+        <div class="scout-copy">
+          <h2>Think your company belongs here?</h2>
+          <a class="btn btn-primary contact-trigger" href="#contact-modal">Get in touch</a>
+          <div class="scout-lead-block">
+            <h3>Know someone we should talk to?</h3>
+            <a class="text-link" href="mailto:hello@niedbala.com">Send us a lead</a>
+          </div>
+        </div>
+        <img class="scout-image" src="https://cdn.prod.website-files.com/5f10771cbfea70224f1ce526/5f21dd6753ae7a2394148259_illustration_tiny_scout.png" alt="Niedbala scout illustration">
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html" aria-label="Niedbala Companies Home">
+          <span class="logo-text">Niedbala</span>
+        </a>
+        <p>Niedbala Companies</p>
+      </div>
+      <div class="footer-links">
+        <a href="companies.html">Companies</a>
+        <a href="about.html">About</a>
+        <a href="#contact-modal" class="contact-trigger">Contact</a>
+      </div>
+      <div class="footer-links">
+        <a href="#newsletter-modal" class="newsletter-trigger">Newsletter</a>
+        <a href="#">The Niedbala Foundation</a>
+      </div>
+      <div class="footer-newsletter">
+        <p>Sign up for the Niedbala Dispatch, a monthly digest of what we're thinking, learning, and looking to do next.</p>
+        <form class="inline-form js-fake-submit" data-success="Thank you! Your submission has been received.">
+          <input type="email" name="email" placeholder="Email address" required>
+          <button type="submit">Subscribe</button>
+          <p class="form-feedback" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; 2025 Niedbala Companies</p>
+      <a href="#top">Back to top</a>
+    </div>
+  </footer>
+
+  <div class="modal" id="newsletter-modal" aria-hidden="true">
+    <div class="modal-scrim" data-modal-close></div>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="newsletter-title">
+      <button class="modal-close" type="button" data-modal-close aria-label="Close">
+        <img src="https://cdn.prod.website-files.com/5f10771cbfea70224f1ce526/5f69be031ffefa288e626897_Tiny-Close-Icon.svg" alt="">
+      </button>
+      <h2 id="newsletter-title">Want to keep up to date on what we're up to?</h2>
+      <p>Sign up for the Niedbala Dispatch, a monthly digest of what we're thinking, learning, and looking to do next.</p>
+      <form class="stack-form js-fake-submit" data-success="Thank you! Your submission has been received.">
+        <label>
+          Email
+          <input type="email" name="newsletter_email" required>
+        </label>
+        <button class="btn btn-primary" type="submit">Join the dispatch</button>
+        <p class="form-feedback" aria-live="polite"></p>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal" id="contact-modal" aria-hidden="true">
+    <div class="modal-scrim" data-modal-close></div>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+      <button class="modal-close" type="button" data-modal-close aria-label="Close">
+        <img src="https://cdn.prod.website-files.com/5f10771cbfea70224f1ce526/5f69be031ffefa288e626897_Tiny-Close-Icon.svg" alt="">
+      </button>
+      <h2 id="contact-title">Contact Niedbala Companies</h2>
+      <form class="stack-form js-fake-submit" data-success="Thank you! Your message was sent.">
+        <label>
+          Name
+          <input type="text" name="name" required>
+        </label>
+        <label>
+          Email
+          <input type="email" name="email" required>
+        </label>
+        <label>
+          Company
+          <input type="text" name="company" required>
+        </label>
+        <label>
+          Tell us a bit about your business
+          <textarea name="notes" rows="4" required></textarea>
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" name="dispatch_opt_in">
+          <span>I want to receive the Niedbala Dispatches.</span>
+        </label>
+        <button class="btn btn-primary" type="submit">Send message</button>
+        <p class="form-feedback" aria-live="polite"></p>
+      </form>
+    </section>
+  </div>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>
