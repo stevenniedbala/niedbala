@@ -720,6 +720,7 @@ textarea:focus-visible {
 .scout-image {
   justify-self: end;
   max-width: 320px;
+  mix-blend-mode: darken;
 }
 
 .about-heading p {
