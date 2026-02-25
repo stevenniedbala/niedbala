@@ -1,5 +1,5 @@
 const portfolioItems = [
-  { name: "Nohorooms", tagline: "Premium room rentals", url: "#" },
+  { name: "nohorooms.com", tagline: "Premium room rentals", url: "#" },
   { name: "vyvv.com", tagline: "Modern living spaces", url: "#" },
   { name: "Portfolio", tagline: "Real estate holdings", url: "#" },
 ];
@@ -62,7 +62,7 @@ const testimonials = [
 ];
 
 const companies = [
-  { name: "Nohorooms", url: "#", image: "", logo: "" },
+  { name: "nohorooms.com", url: "#", image: "", logo: "" },
   { name: "vyvv.com", url: "#", image: "", logo: "" },
   { name: "Portfolio", url: "#", image: "", logo: "" },
 ];
