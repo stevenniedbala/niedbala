@@ -492,6 +492,7 @@ textarea:focus-visible {
   border-radius: 20px;
   padding: 1.25rem;
   display: grid;
+  grid-template-rows: 259px auto 1fr;
   gap: 0.92rem;
   justify-items: center;
   text-align: center;
@@ -511,6 +512,8 @@ textarea:focus-visible {
   display: grid;
   gap: 0.62rem;
   text-align: left;
+  width: 90%;
+  padding-bottom: 0.5rem;
 }
 
 .compare-card li {
@@ -1253,7 +1256,10 @@ textarea:focus-visible {
 
 .page-home .compare-card img {
   width: 259px;
+  height: 259px;
   max-width: 100%;
+  object-fit: contain;
+  object-position: bottom;
 }
 
 .page-home .compare-card h3 {
