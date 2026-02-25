@@ -740,8 +740,9 @@ textarea:focus-visible {
 .story-gif {
   width: 100%;
   border-radius: 20px;
-  border: 1px solid var(--line);
-  background: var(--surface);
+  border: none;
+  background: var(--bone);
+  mix-blend-mode: darken;
 }
 
 .about-paragraphs h2 {
@@ -1312,6 +1313,10 @@ textarea:focus-visible {
   .about-story-grid,
   .about-story-reverse .about-story-grid {
     grid-template-columns: 1fr;
+  }
+
+  .about-story-reverse .story-gif {
+    order: 2;
   }
 
   .metrics-grid {
