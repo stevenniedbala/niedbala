@@ -5,7 +5,7 @@ Personal holding company website. Built as a static site with no frameworks, no 
 ## Stack
 
 - HTML5, CSS3 (custom properties), vanilla JavaScript
-- Google Fonts: Manrope (sans-serif)
+- Google Fonts: Manrope (sans-serif), Cormorant Garamond (serif)
 - No package.json, no npm, no bundler — just files served directly
 
 ## Architecture
@@ -13,7 +13,7 @@ Personal holding company website. Built as a static site with no frameworks, no 
 Three pages, one stylesheet, one script:
 
 ```
-index.html          Home — hero, stats, process, testimonials, comparison, criteria, CTA
+index.html          Home — hero, stats, process, comparison, criteria, CTA
 companies.html      Companies — grid of portfolio company cards, scout section
 about.html          About — origin story, principles, metrics, team grid
 assets/css/styles.css   All styles (design tokens in :root, components, page overrides, responsive)
@@ -56,7 +56,9 @@ Team members and principles are hardcoded in `about.html` as static markup.
 
 **Forms:** All forms use `.js-fake-submit` class — they prevent default submission and show a success message from `data-success` attribute. No backend.
 
-**Images:** Portfolio logos and backgrounds come from Tiny's CDN (`cdn.prod.website-files.com`). These will need to be replaced with Niedbala Companies assets.
+**Images:** Local PNG files for illustrations. Use `mix-blend-mode: darken` to blend image backgrounds into the bone (`#F3EFE6`) page background. The `<picture>` element is used on the home page process image to swap `imageforindexphone.png` on mobile (≤640px).
+
+**Image blending:** When adding new images with off-white backgrounds, apply `mix-blend-mode: darken` so any pixels lighter than the bone background become invisible. This avoids visible image edges.
 
 ## Workflow
 
@@ -68,14 +70,17 @@ Team members and principles are hardcoded in `about.html` as static markup.
 
 ## What Needs to Change (Tiny → Niedbala Companies)
 
-This site is currently a Tiny.com replica. The transformation roadmap:
+Transformation progress:
 
-- [ ] Replace all Tiny branding (logo SVG, page titles, copyright text)
-- [ ] Replace company data in `main.js` with Niedbala portfolio companies
+- [x] Replace hero copy, stats, process section, comparison section, criteria
+- [x] Update meta tags (title)
+- [x] Update logo text to "Niedbala Companies"
+- [x] Replace comparison card images with local assets (imageforretail.png, imageforpe.png, imageforniedbala2.png)
+- [x] Replace about page images with local assets (firstphotoabout.png, secondphotoabout.png)
+- [x] Add mobile-specific process image (imageforindexphone.png)
+- [x] Update company data in `main.js` (nohorooms.com, vyvv.com, Portfolio)
+- [ ] Replace remaining CDN image URLs with self-hosted assets (criteria icons, close icons, arrow icons)
 - [ ] Replace testimonial data with Niedbala testimonials (or remove section)
-- [ ] Update hero copy, stats, process section, comparison section, criteria
-- [ ] Replace CDN image URLs with self-hosted assets
-- [ ] Update meta tags (title, description, Open Graph)
+- [ ] Update meta tags (description, Open Graph)
 - [ ] Add favicon
 - [ ] Update footer links and contact information
-- [ ] Consider adding/removing pages as needed for the holding company structure
