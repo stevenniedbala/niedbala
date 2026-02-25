@@ -544,6 +544,10 @@ textarea:focus-visible {
   color: var(--oxblood);
 }
 
+.compare-card-dark img {
+  mix-blend-mode: darken;
+}
+
 .compare-card-dark p,
 .compare-card-dark li {
   color: var(--muted);
@@ -560,12 +564,12 @@ textarea:focus-visible {
 }
 
 .compare-card-light {
-  background: #E8DFCD;
+  background: var(--bone);
   color: var(--oxblood);
 }
 
 .compare-card-light img {
-  mix-blend-mode: multiply;
+  mix-blend-mode: darken;
 }
 
 .compare-card-light h3,
