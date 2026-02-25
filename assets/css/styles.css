@@ -1034,7 +1034,6 @@ textarea:focus-visible {
 }
 
 .page-home .hero-copy h1 {
-  max-width: 12ch;
   margin-inline: auto;
   font-size: clamp(2.7rem, 7.4vw, 4.9rem);
   line-height: 1.02;
@@ -1051,6 +1050,7 @@ textarea:focus-visible {
   z-index: 0;
   display: inline-block;
   padding: 0 0.2em;
+  white-space: nowrap;
 }
 
 .hero-emphasis::before {
@@ -1449,7 +1449,7 @@ textarea:focus-visible {
   }
 
   .page-home .hero-copy h1 {
-    max-width: 11ch;
+    max-width: none;
   }
 
   .page-home .stats-grid {
