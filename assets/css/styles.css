@@ -1115,13 +1115,17 @@ textarea:focus-visible {
   gap: 0;
 }
 
+.page-home .process-visuals picture {
+  width: 100%;
+}
+
 .page-home .process-visuals img {
   border: 0;
   border-radius: 0;
   background: none;
 }
 
-.page-home .process-visuals img:nth-child(2) {
+.page-home .process-visuals > :nth-child(2) {
   display: none;
 }
 
