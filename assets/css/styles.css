@@ -1496,10 +1496,10 @@ textarea:focus-visible {
   }
 
   .hero-illustration {
-    width: 110%;
+    width: 100%;
     max-width: none;
-    margin-left: 50%;
-    transform: translateX(-50%);
+    margin-left: 0;
+    transform: none;
     margin-bottom: -1.5rem;
   }
 
