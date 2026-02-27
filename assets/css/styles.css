@@ -839,13 +839,24 @@ textarea:focus-visible {
 .footer-grid {
   display: grid;
   gap: 1.3rem;
-  grid-template-columns: 0.9fr 0.55fr 0.7fr 1.2fr;
+  grid-template-columns: 0.9fr 0.55fr 1fr;
   align-items: start;
 }
 
 .footer-brand p {
   margin-top: 0.55rem;
   color: var(--muted);
+}
+
+.footer-brand p a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--brass);
+  font-weight: 600;
+}
+
+.footer-brand p a:hover {
+  color: var(--oxblood);
 }
 
 .footer-links {
