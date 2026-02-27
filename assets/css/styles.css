@@ -1068,7 +1068,7 @@ textarea:focus-visible {
 
 .hero-illustration {
   width: 100%;
-  margin-top: -10%;
+  margin-top: 1.5rem;
   mix-blend-mode: darken;
 }
 
