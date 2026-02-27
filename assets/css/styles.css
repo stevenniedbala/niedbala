@@ -1496,17 +1496,26 @@ textarea:focus-visible {
   }
 
   .hero-illustration {
-    width: 100%;
-    margin-left: 0;
-    transform: none;
+    width: 110%;
+    max-width: none;
+    margin-left: 50%;
+    transform: translateX(-50%);
     margin-bottom: -1.5rem;
   }
 
   .page-home .stats-grid {
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
-    gap: 0.65rem 2rem;
+    gap: 0.65rem 1.2rem;
+  }
+
+  .page-home .stat-card h2 {
+    font-size: 1.3rem;
+  }
+
+  .page-home .stat-card p {
+    font-size: 0.58rem;
   }
 
   .page-home .testimonial-main {
