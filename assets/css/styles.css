@@ -1066,6 +1066,12 @@ textarea:focus-visible {
   font-size: 1.12rem;
 }
 
+.hero-illustration {
+  width: 100%;
+  margin-top: -10%;
+  mix-blend-mode: darken;
+}
+
 .hero-emphasis {
   position: relative;
   z-index: 0;
