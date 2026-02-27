@@ -1067,8 +1067,12 @@ textarea:focus-visible {
 }
 
 .hero-illustration {
-  width: 100%;
-  margin-top: 1.5rem;
+  width: 130%;
+  max-width: 900px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0.5rem;
+  margin-bottom: -4rem;
   mix-blend-mode: darken;
 }
 
@@ -1489,6 +1493,13 @@ textarea:focus-visible {
 
   .page-home .hero-copy h1 {
     max-width: none;
+  }
+
+  .hero-illustration {
+    width: 100%;
+    margin-left: 0;
+    transform: none;
+    margin-bottom: -1.5rem;
   }
 
   .page-home .stats-grid {
