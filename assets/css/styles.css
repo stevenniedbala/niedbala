@@ -732,15 +732,11 @@ textarea:focus-visible {
 }
 
 .about-founder {
-  margin-top: 3.5rem;
   width: 240px;
+  margin: 0 auto;
   text-align: center;
   background: var(--bg);
   isolation: isolate;
-}
-
-.about-heading {
-  padding-bottom: 0;
 }
 
 .about-headshot {
@@ -1499,11 +1495,11 @@ textarea:focus-visible {
   }
 
   .about-founder {
-    margin-top: 1rem;
+    width: 55%;
   }
 
   .about-headshot {
-    width: 55%;
+    width: 100%;
   }
 
   .process-visuals,
