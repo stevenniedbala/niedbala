@@ -742,6 +742,7 @@ textarea:focus-visible {
 .about-headshot {
   display: block;
   width: 240px;
+  margin: 0 auto;
   mix-blend-mode: darken;
 }
 
