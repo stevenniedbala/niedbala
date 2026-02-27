@@ -733,12 +733,18 @@ textarea:focus-visible {
 
 .about-founder {
   margin-top: 3.5rem;
-  margin-bottom: -3rem;
+  width: 240px;
   text-align: center;
+  background: var(--bg);
+  isolation: isolate;
+}
+
+.about-heading {
+  padding-bottom: 0;
 }
 
 .about-headshot {
-  display: inline-block;
+  display: block;
   width: 240px;
   mix-blend-mode: darken;
 }
