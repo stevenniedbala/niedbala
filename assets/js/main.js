@@ -62,8 +62,28 @@ const testimonials = [
 ];
 
 const companies = [
-  { name: "nohorooms.com", url: "https://nohorooms.com", image: "", logo: "" },
-  { name: "vyvv.com", url: "https://vyvv.com", image: "", logo: "" },
+  {
+    name: "nohorooms.com",
+    url: "https://nohorooms.com",
+    image: "",
+    logo: "",
+    theme: {
+      bg: "#dddddd",
+      color: "#ff385c",
+      font: "'Nunito Sans', sans-serif",
+    },
+  },
+  {
+    name: "vyvv.com",
+    url: "https://vyvv.com",
+    image: "",
+    logo: "",
+    theme: {
+      bg: "#171a20",
+      color: "#ffffff",
+      font: "",
+    },
+  },
   { name: "Portfolio", url: "#", image: "", logo: "" },
 ];
 
@@ -306,6 +326,11 @@ function renderCompanies() {
     }
     link.setAttribute("aria-label", company.name);
 
+    if (company.theme) {
+      link.style.background = company.theme.bg;
+      link.style.borderColor = company.theme.bg;
+    }
+
     if (company.image) {
       const background = document.createElement("img");
       background.className = "company-bg";
@@ -329,6 +354,10 @@ function renderCompanies() {
       const nameText = document.createElement("span");
       nameText.className = "company-name-text";
       nameText.textContent = company.name;
+      if (company.theme) {
+        nameText.style.fontFamily = company.theme.font;
+        nameText.style.color = company.theme.color;
+      }
       overlay.append(nameText);
     }
 
