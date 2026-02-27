@@ -778,8 +778,12 @@ textarea:focus-visible {
   mix-blend-mode: darken;
 }
 
+.about-heading + .about-story-section {
+  padding-top: clamp(1rem, 2vw, 1.5rem);
+}
+
 .about-paragraphs h2 {
-  margin-bottom: 0.55rem;
+  margin-bottom: 1rem;
 }
 
 .principles-grid {
