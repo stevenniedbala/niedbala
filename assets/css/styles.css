@@ -241,21 +241,17 @@ textarea:focus-visible {
   display: block;
   width: 20px;
   height: 2px;
-  margin: 4px auto;
+  margin: 3px auto;
   background: var(--oxblood);
   transition: transform 0.24s ease, opacity 0.24s ease;
 }
 
 .nav-toggle.is-open span:nth-child(1) {
-  transform: translateY(6px) rotate(45deg);
+  transform: translateY(4px);
 }
 
 .nav-toggle.is-open span:nth-child(2) {
   opacity: 0;
-}
-
-.nav-toggle.is-open span:nth-child(3) {
-  transform: translateY(-6px) rotate(-45deg);
 }
 
 .more-menu {
