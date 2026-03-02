@@ -188,6 +188,17 @@ textarea:focus-visible {
   backdrop-filter: blur(10px);
 }
 
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .header-inner {
   min-height: 82px;
   display: flex;

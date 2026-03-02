@@ -368,9 +368,26 @@ function renderCompanies() {
   grid.append(fragment);
 }
 
+function setupFadeIn() {
+  const items = queryAll(".fade-in");
+  if (!items.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  items.forEach((item) => observer.observe(item));
+}
+
 setupNavigation();
 setupModals();
 setupFakeForms();
 renderPortfolioMarquee();
 setupTestimonials();
 renderCompanies();
+setupFadeIn();
