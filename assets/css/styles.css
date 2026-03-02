@@ -181,8 +181,7 @@ textarea:focus-visible {
   -webkit-text-size-adjust: 100%;
   font-family: sans-serif;
   box-sizing: border-box;
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 30;
   border-bottom: 1px solid var(--line);
   background: rgba(243, 239, 230, 0.94);
