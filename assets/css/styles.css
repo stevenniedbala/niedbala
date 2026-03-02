@@ -1123,6 +1123,20 @@ textarea:focus-visible {
   mix-blend-mode: darken;
 }
 
+.middle-housing-section .lead-bold {
+  font-size: 2em;
+  line-height: 1.2;
+  display: block;
+}
+
+.middle-housing-img {
+  width: 100%;
+  margin-top: 1rem;
+  border-radius: 20px;
+  mix-blend-mode: darken;
+  filter: brightness(0.99);
+}
+
 .hero-emphasis {
   position: relative;
   z-index: 0;
