@@ -63,17 +63,6 @@ const testimonials = [
 
 const companies = [
   {
-    name: "nohorooms.com",
-    url: "https://nohorooms.com",
-    image: "",
-    logo: "",
-    theme: {
-      bg: "#dddddd",
-      color: "#ff385c",
-      font: "'Nunito Sans', sans-serif",
-    },
-  },
-  {
     name: "vyvv.com",
     url: "https://vyvv.com",
     image: "",
@@ -82,6 +71,17 @@ const companies = [
       bg: "#171a20",
       color: "#ffffff",
       font: "",
+    },
+  },
+  {
+    name: "nohorooms.com",
+    url: "https://nohorooms.com",
+    image: "",
+    logo: "",
+    theme: {
+      bg: "#dddddd",
+      color: "#ff385c",
+      font: "'Nunito Sans', sans-serif",
     },
   },
   { name: "Portfolio", url: "#", image: "", logo: "" },
