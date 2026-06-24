@@ -1124,6 +1124,13 @@ textarea:focus-visible {
   mix-blend-mode: darken;
 }
 
+.middle-housing-section h2 {
+  text-align: center;
+  margin-inline: auto;
+  font-size: clamp(2rem, 4.3vw, 3rem);
+  max-width: none;
+}
+
 .middle-housing-section .lead-bold {
   font-size: 2em;
   line-height: 1.2;
@@ -1186,7 +1193,7 @@ textarea:focus-visible {
 }
 
 .page-home .process-section h2 {
-  max-width: 16ch;
+  max-width: none;
   margin-inline: auto;
   text-align: center;
   font-size: clamp(2rem, 4.3vw, 3rem);
