@@ -709,12 +709,15 @@ textarea:focus-visible {
 .company-name-hover {
   position: relative;
   display: inline-grid;
+  text-align: center;
 }
 
 .company-name-hover .company-name-default,
 .company-name-hover .company-name-url {
   grid-area: 1 / 1;
   transition: opacity 0.2s ease;
+  width: 100%;
+  text-align: center;
 }
 
 .company-name-hover .company-name-url {
