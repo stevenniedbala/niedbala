@@ -706,6 +706,29 @@ textarea:focus-visible {
   letter-spacing: -0.02em;
 }
 
+.company-name-hover {
+  position: relative;
+  display: inline-grid;
+}
+
+.company-name-hover .company-name-default,
+.company-name-hover .company-name-url {
+  grid-area: 1 / 1;
+  transition: opacity 0.2s ease;
+}
+
+.company-name-hover .company-name-url {
+  opacity: 0;
+}
+
+.company-card:hover .company-name-hover .company-name-default {
+  opacity: 0;
+}
+
+.company-card:hover .company-name-hover .company-name-url {
+  opacity: 1;
+}
+
 .scout-layout {
   display: grid;
   gap: 2rem;

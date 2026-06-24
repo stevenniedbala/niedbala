@@ -64,6 +64,7 @@ const testimonials = [
 const companies = [
   {
     name: "vyvv.com",
+    label: "Development",
     url: "https://vyvv.com",
     image: "",
     logo: "",
@@ -75,6 +76,7 @@ const companies = [
   },
   {
     name: "nohorooms.com",
+    label: "Management",
     url: "https://nohorooms.com",
     image: "",
     logo: "",
@@ -84,7 +86,7 @@ const companies = [
       font: "'Nunito Sans', sans-serif",
     },
   },
-  { name: "Portfolio", url: "#", image: "", logo: "" },
+  { name: "Portfolio", url: "https://vyvv.com", image: "", logo: "" },
 ];
 
 function query(selector, root = document) {
@@ -350,6 +352,27 @@ function renderCompanies() {
       logo.alt = company.name;
       logo.loading = "lazy";
       overlay.append(logo);
+    } else if (company.label) {
+      const wrapper = document.createElement("span");
+      wrapper.className = "company-name-hover";
+
+      const labelSpan = document.createElement("span");
+      labelSpan.className = "company-name-text company-name-default";
+      labelSpan.textContent = company.label;
+
+      const urlSpan = document.createElement("span");
+      urlSpan.className = "company-name-text company-name-url";
+      urlSpan.textContent = company.name;
+
+      if (company.theme) {
+        labelSpan.style.fontFamily = company.theme.font;
+        labelSpan.style.color = company.theme.color;
+        urlSpan.style.fontFamily = company.theme.font;
+        urlSpan.style.color = company.theme.color;
+      }
+
+      wrapper.append(labelSpan, urlSpan);
+      overlay.append(wrapper);
     } else {
       const nameText = document.createElement("span");
       nameText.className = "company-name-text";
