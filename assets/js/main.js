@@ -552,8 +552,115 @@ function setupBrushReveal() {
       done = true;
       // Fully erase cover — image completely revealed
       ctx.clearRect(0, 0, W, H);
-      drawUnderline();
+      paintHeroTitle();
     }
+  }
+
+  function paintHeroTitle() {
+    const wrap = document.querySelector(".hero-title-wrap");
+    const cv   = document.querySelector(".hero-title-canvas");
+    if (!wrap || !cv) { drawUnderline(); return; }
+
+    const BG = "#F3EFE6";
+
+    function run() {
+      // Size and fill canvas BEFORE making the text visible so there's no flash
+      const rect = wrap.getBoundingClientRect();
+      const W = Math.round(rect.width)  || wrap.offsetWidth  || 400;
+      const H = Math.round(rect.height) || wrap.offsetHeight || 100;
+      cv.width  = W;
+      cv.height = H;
+      const cx = cv.getContext("2d");
+      cx.fillStyle = BG;
+      cx.fillRect(0, 0, W, H);
+      wrap.classList.remove("hero-title-hidden");
+
+      const strokeDur = 700;
+      const total = strokeDur;
+      const strokes = [
+        { dir: -1, centerY: H * 0.5, thickness: H * 1.6, seed: 11 },
+      ];
+      let st = null;
+
+      function rand(seed) {
+        let s = seed * 999;
+        return function() {
+          s = (s * 1664525 + 1013904223) & 0xffffffff;
+          return (s >>> 0) / 4294967296;
+        };
+      }
+
+      function eraseTitleStroke(tipX, centerY, thickness, dir, r) {
+        const startX = dir === 1 ? -4 : W + 4;
+        const segments = 50;
+        const topPts = [], botPts = [];
+        for (let i = 0; i <= segments; i++) {
+          const t = i / segments;
+          const x = startX + (tipX - startX) * t;
+          const jitter = (r() - 0.5) * thickness * 0.06;
+          const halfT  = thickness / 2 + (r() - 0.5) * thickness * 0.04;
+          topPts.push([x, centerY - halfT + jitter]);
+          botPts.push([x, centerY + halfT + jitter]);
+        }
+        cx.save();
+        cx.globalCompositeOperation = "destination-out";
+        const grad = cx.createLinearGradient(
+          dir === 1 ? tipX - W * 0.14 : tipX + W * 0.14, 0, tipX, 0
+        );
+        grad.addColorStop(0, "rgba(0,0,0,1)");
+        grad.addColorStop(0.7, "rgba(0,0,0,0.85)");
+        grad.addColorStop(0.92, "rgba(0,0,0,0.3)");
+        grad.addColorStop(1, "rgba(0,0,0,0)");
+        cx.fillStyle = grad;
+        cx.beginPath();
+        cx.moveTo(topPts[0][0], topPts[0][1]);
+        for (let i = 1; i < topPts.length; i++) cx.lineTo(topPts[i][0], topPts[i][1]);
+        for (let i = botPts.length - 1; i >= 0; i--) cx.lineTo(botPts[i][0], botPts[i][1]);
+        cx.closePath();
+        cx.fill();
+        for (let b = 0; b < 5; b++) {
+          const off = (r() - 0.5) * thickness * 0.85;
+          cx.beginPath();
+          cx.moveTo(startX, centerY + off);
+          for (let i = 1; i <= 16; i++) {
+            const t = i / 16;
+            cx.lineTo(startX + (tipX - startX) * t, centerY + off + (r() - 0.5) * 7);
+          }
+          cx.strokeStyle = `rgba(0,0,0,${0.18 + r() * 0.22})`;
+          cx.lineWidth = 1 + r() * 2;
+          cx.lineCap = "round";
+          cx.stroke();
+        }
+        cx.restore();
+      }
+
+      function tick(now) {
+        if (!st) st = now;
+        const elapsed = now - st;
+
+        cx.globalCompositeOperation = "source-over";
+        cx.fillStyle = BG;
+        cx.fillRect(0, 0, W, H);
+
+        strokes.forEach(function(s) {
+          const t = Math.max(0, Math.min(1, elapsed / strokeDur));
+          if (t <= 0) return;
+          const eased = 1 - Math.pow(1 - t, 3);
+          const tipX = s.dir === 1 ? -4 + (W + 8) * eased : W + 4 - (W + 8) * eased;
+          eraseTitleStroke(tipX, s.centerY, s.thickness, s.dir, rand(s.seed));
+        });
+
+        if (elapsed < total) {
+          requestAnimationFrame(tick);
+        } else {
+          cv.remove();
+          setTimeout(drawUnderline, 120);
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(run);
   }
 
   function paintSubtext() {
@@ -561,11 +668,11 @@ function setupBrushReveal() {
     const cv   = document.querySelector(".hero-subtext-canvas");
     if (!wrap || !cv) { revealAllStats(); return; }
 
-    wrap.classList.remove("hero-subtext-hidden");
     const BG = "#F3EFE6";
 
     function run() {
-      const rect = cv.getBoundingClientRect();
+      // Size and fill canvas BEFORE making text visible so there's no flash
+      const rect = wrap.getBoundingClientRect();
       const W = Math.round(rect.width)  || wrap.offsetWidth  || 300;
       const H = Math.round(rect.height) || wrap.offsetHeight || 60;
       cv.width  = W;
@@ -573,6 +680,7 @@ function setupBrushReveal() {
       const cx = cv.getContext("2d");
       cx.fillStyle = BG;
       cx.fillRect(0, 0, W, H);
+      wrap.classList.remove("hero-subtext-hidden");
 
       const strokeDur = 380;
       const gap = 120;
