@@ -516,7 +516,7 @@ function setupBrushReveal() {
 
   const strokeDuration = 1400;
   const strokeGap = 1000;
-  const totalDuration = strokeDuration + 3 * strokeGap;
+  const totalDuration = strokeDuration + 2 * strokeGap;
   let startTime = null;
   let done = false;
 
@@ -530,10 +530,9 @@ function setupBrushReveal() {
     ctx.drawImage(grayReady ? grayCanvas : img, 0, 0, W, H);
 
     const strokes = [
-      { centerY: H * 0.17, thickness: H * 0.29, dir:  1, seed: 1 },
-      { centerY: H * 0.43, thickness: H * 0.28, dir: -1, seed: 2 },
-      { centerY: H * 0.67, thickness: H * 0.26, dir:  1, seed: 3 },
-      { centerY: H * 0.88, thickness: H * 0.24, dir: -1, seed: 4 },
+      { centerY: H * 0.20, thickness: H * 0.38, dir:  1, seed: 1 },
+      { centerY: H * 0.52, thickness: H * 0.36, dir: -1, seed: 2 },
+      { centerY: H * 0.83, thickness: H * 0.36, dir:  1, seed: 3 },
     ];
 
     strokes.forEach((s, i) => {
