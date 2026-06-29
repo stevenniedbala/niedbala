@@ -1154,7 +1154,8 @@ textarea:focus-visible {
   font-size: 1.12rem;
 }
 
-.hero-illustration {
+.hero-illustration-wrap {
+  position: relative;
   width: 130%;
   max-width: 900px;
   margin-left: 50%;
@@ -1163,6 +1164,27 @@ textarea:focus-visible {
   margin-bottom: -4rem;
   mix-blend-mode: darken;
 }
+
+.hero-illustration {
+  width: 100%;
+  display: block;
+}
+
+.hero-illustration-base {
+  filter: saturate(0) brightness(1.05);
+}
+
+.hero-illustration-color-wrap {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.hero-illustration-color-wrap img {
+  width: 100%;
+  display: block;
+}
+
 
 .middle-housing-section h2 {
   text-align: center;
@@ -1187,19 +1209,28 @@ textarea:focus-visible {
 
 .hero-emphasis {
   position: relative;
-  z-index: 0;
   display: inline-block;
-  padding: 0 0.2em;
   white-space: nowrap;
 }
 
-.hero-emphasis::before {
-  content: "";
+.hero-underline {
   position: absolute;
-  z-index: -1;
-  inset: 58% -6% 2% -6%;
-  border-radius: 999px;
-  background: rgba(176, 141, 87, 0.2);
+  left: -4%;
+  bottom: -0.15em;
+  width: 108%;
+  height: 0.45em;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.hero-underline-path {
+  fill: none;
+  stroke: rgba(176, 141, 87, 0.55);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
 }
 
 .page-home .stats-grid {
@@ -1622,7 +1653,7 @@ textarea:focus-visible {
     max-width: none;
   }
 
-  .hero-illustration {
+  .hero-illustration-wrap {
     width: 100%;
     max-width: none;
     margin-left: 0;

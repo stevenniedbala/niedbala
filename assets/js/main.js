@@ -405,6 +405,189 @@ function setupFadeIn() {
   items.forEach((item) => observer.observe(item));
 }
 
+function setupBrushReveal() {
+  const img = document.getElementById("heroIllustration");
+  if (!img) return;
+
+  const W = 900, H = 420;
+  const offscreen = document.createElement("canvas");
+  offscreen.width = W;
+  offscreen.height = H;
+  const ctx = offscreen.getContext("2d");
+
+  // Seeded noise: deterministic jagged offsets so edges look hand-painted
+  function seededRand(seed) {
+    let s = seed;
+    return function() {
+      s = (s * 1664525 + 1013904223) & 0xffffffff;
+      return (s >>> 0) / 4294967296;
+    };
+  }
+
+  // Draw one brushstroke band up to x=tipX, going left→right (dir=1) or right→left (dir=-1)
+  // centerY and thickness define the band; bristleSeeds give repeatable noise
+  function drawStroke(tipX, centerY, thickness, dir, rand) {
+    ctx.save();
+    ctx.globalCompositeOperation = "source-over";
+
+    const segments = 80;         // how many jagged points along the stroke
+    const bristles = 6;          // extra thin lines for frayed edge feel
+    const startX = dir === 1 ? -10 : W + 10;
+
+    // Main body — a thick jagged path filled solid
+    ctx.beginPath();
+    const topPts = [], botPts = [];
+    for (let i = 0; i <= segments; i++) {
+      const t = i / segments;
+      const x = startX + (tipX - startX) * t;
+      const jitter = (rand() - 0.5) * thickness * 0.35;
+      const halfT = thickness / 2 + (rand() - 0.5) * thickness * 0.2;
+      topPts.push([x, centerY - halfT + jitter]);
+      botPts.push([x, centerY + halfT + jitter]);
+    }
+
+    // Feathered leading edge: taper opacity near tip
+    const grad = ctx.createLinearGradient(
+      dir === 1 ? tipX - W * 0.12 : tipX + W * 0.12, 0,
+      tipX, 0
+    );
+    grad.addColorStop(0, "rgba(0,0,0,1)");
+    grad.addColorStop(0.6, "rgba(0,0,0,0.85)");
+    grad.addColorStop(0.88, "rgba(0,0,0,0.4)");
+    grad.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = grad;
+
+    ctx.moveTo(topPts[0][0], topPts[0][1]);
+    for (let i = 1; i < topPts.length; i++) ctx.lineTo(topPts[i][0], topPts[i][1]);
+    for (let i = botPts.length - 1; i >= 0; i--) ctx.lineTo(botPts[i][0], botPts[i][1]);
+    ctx.closePath();
+    ctx.fill();
+
+    // Bristle lines along the edges for frayed texture
+    for (let b = 0; b < bristles; b++) {
+      const offset = (rand() - 0.5) * thickness * 0.9;
+      const bX0 = startX;
+      const bX1 = tipX + (rand() - 0.5) * W * 0.04;
+      ctx.beginPath();
+      ctx.moveTo(bX0, centerY + offset);
+      for (let i = 1; i <= 20; i++) {
+        const t = i / 20;
+        const bx = bX0 + (bX1 - bX0) * t;
+        const by = centerY + offset + (rand() - 0.5) * 8;
+        ctx.lineTo(bx, by);
+      }
+      ctx.strokeStyle = `rgba(0,0,0,${0.18 + rand() * 0.25})`;
+      ctx.lineWidth = 1 + rand() * 2;
+      ctx.lineCap = "round";
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  // 4 strokes: alternating L→R and R→L
+  const strokes = [
+    { centerY: H * 0.17,  thickness: H * 0.29, dir:  1, seed: 1 },
+    { centerY: H * 0.43,  thickness: H * 0.28, dir: -1, seed: 2 },
+    { centerY: H * 0.67,  thickness: H * 0.26, dir:  1, seed: 3 },
+    { centerY: H * 0.88,  thickness: H * 0.24, dir: -1, seed: 4 },
+  ];
+  strokes.forEach(s => s.rand = seededRand(s.seed * 999));
+
+  // Each stroke: 1.4s duration, 1.0s gap between start times
+  const strokeDuration = 1400;
+  const strokeGap = 1000;
+  const totalDuration = strokeDuration + (strokes.length - 1) * strokeGap;
+  let startTime = null;
+  let done = false;
+
+  // Hide the color layer until the animation starts
+  img.style.webkitMaskImage = "linear-gradient(black,black)";
+  img.style.maskImage       = "linear-gradient(black,black)";
+  img.style.webkitMaskSize  = "0% 100%";
+  img.style.maskSize        = "0% 100%";
+
+  function applyMask() {
+    const url = offscreen.toDataURL();
+    img.style.webkitMaskImage = `url(${url})`;
+    img.style.maskImage       = `url(${url})`;
+    img.style.webkitMaskSize  = "100% 100%";
+    img.style.maskSize        = "100% 100%";
+  }
+
+  function tick(now) {
+    if (!startTime) startTime = now;
+    const elapsed = now - startTime;
+
+    ctx.clearRect(0, 0, W, H);
+    // Re-seed each frame so strokes are deterministic (not random per frame)
+    strokes.forEach(s => s.rand = seededRand(s.seed * 999));
+
+    strokes.forEach((s, i) => {
+      const strokeStart = i * strokeGap;
+      const t = Math.max(0, Math.min(1, (elapsed - strokeStart) / strokeDuration));
+      if (t <= 0) return;
+
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - t, 3);
+      const tipX = s.dir === 1
+        ? -10 + (W + 20) * eased
+        : W + 10 - (W + 20) * eased;
+
+      drawStroke(tipX, s.centerY, s.thickness, s.dir, s.rand);
+    });
+
+    applyMask();
+
+    if (elapsed < totalDuration) {
+      requestAnimationFrame(tick);
+    } else if (!done) {
+      done = true;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, W, H);
+      applyMask();
+      drawUnderline();
+    }
+  }
+
+  function drawUnderline() {
+    const path = document.querySelector(".hero-underline-path");
+    if (!path) return;
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    path.getBoundingClientRect();
+    path.style.transition = "stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1)";
+    path.style.strokeDashoffset = "0";
+  }
+
+  function animateCounters() {
+    const duration = totalDuration;
+    const els = document.querySelectorAll(".stat-num");
+    els.forEach(el => {
+      const target = parseInt(el.dataset.target, 10);
+      const prefix = el.dataset.prefix || "";
+      const suffix = el.dataset.suffix || "";
+      const start = performance.now();
+      function step(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const val = Math.round(eased * target);
+        el.textContent = prefix + val + suffix;
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  // Start brush and counters together after the same short delay
+  setTimeout(() => {
+    requestAnimationFrame(tick);
+    animateCounters();
+  }, 300);
+}
+
 setupNavigation();
 setupModals();
 setupFakeForms();
@@ -412,3 +595,4 @@ renderPortfolioMarquee();
 setupTestimonials();
 renderCompanies();
 setupFadeIn();
+setupBrushReveal();

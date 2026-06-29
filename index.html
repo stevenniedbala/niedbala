@@ -40,26 +40,34 @@
     <section class="section hero-section">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <h1>We create<br><span class="hero-emphasis">middle housing</span></h1>
+          <h1>We create<br><span class="hero-emphasis">middle housing<svg class="hero-underline" viewBox="0 0 400 18" preserveAspectRatio="none" aria-hidden="true"><path class="hero-underline-path" d="M4,11 C40,6 90,14 140,9 C190,4 240,14 290,9 C330,5 365,12 396,8"/></svg></span></h1>
           <p>
             For over a decade, we’ve helped fill the gap between single family homes and large apartment blocks.
           </p>
-          <picture>
-            <source media="(max-width: 640px)" srcset="mm2.jpg">
-            <img class="hero-illustration" src="mm2.jpg" alt="Missing Middle Housing spectrum">
-          </picture>
+          <div class="hero-illustration-wrap">
+            <!-- base layer: always visible, desaturated so only pencil sketch shows -->
+            <picture>
+              <source media="(max-width: 640px)" srcset="mm2.jpg">
+              <img class="hero-illustration hero-illustration-base" src="mm2.jpg" alt="Missing Middle Housing spectrum">
+            </picture>
+            <!-- color layer: brush-masked on top, reveals the warm watercolor fill -->
+            <picture class="hero-illustration-color-wrap">
+              <source media="(max-width: 640px)" srcset="mm2.jpg">
+              <img class="hero-illustration" id="heroIllustration" src="mm2.jpg" alt="" aria-hidden="true">
+            </picture>
+          </div>
         </div>
         <div class="stats-grid">
           <article class="stat-card">
-            <h2>50+</h2>
+            <h2><span class="stat-num" data-target="50" data-prefix="" data-suffix="+">0</span></h2>
             <p>Homes Created</p>
           </article>
           <article class="stat-card">
-            <h2>$10M+</h2>
+            <h2><span class="stat-num" data-target="10" data-prefix="$" data-suffix="M+">$0</span></h2>
             <p>Value Added</p>
           </article>
           <article class="stat-card">
-            <h2>15 Yrs</h2>
+            <h2><span class="stat-num" data-target="15" data-prefix="" data-suffix=" Yrs">0</span></h2>
             <p>In business</p>
           </article>
         </div>
