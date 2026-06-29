@@ -64,7 +64,6 @@ const testimonials = [
 const companies = [
   {
     name: "vyvv.com",
-    label: "Development",
     url: "https://vyvv.com",
     image: "",
     logo: "",
@@ -75,8 +74,7 @@ const companies = [
     },
   },
   {
-    name: "nohorooms.com",
-    label: "Management",
+    name: "nohorooms",
     url: "https://nohorooms.com",
     image: "",
     logo: "",
