@@ -417,10 +417,9 @@ function setupBrushReveal() {
 
   function resize() {
     const rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width  = rect.width;
-    canvas.height = rect.height;
+    canvas.width  = rect.width  || canvas.parentElement.offsetWidth  || 300;
+    canvas.height = rect.height || canvas.parentElement.offsetHeight || 200;
   }
-  resize();
 
   const ctx = canvas.getContext("2d");
 
@@ -551,14 +550,14 @@ function setupBrushReveal() {
       done = true;
       // Fully erase cover — image completely revealed
       ctx.clearRect(0, 0, W, H);
-      paintHeroTitle();
+      revealAllStats();
     }
   }
 
   function paintHeroTitle() {
     const wrap = document.querySelector(".hero-title-wrap");
     const cv   = document.querySelector(".hero-title-canvas");
-    if (!wrap || !cv) { drawUnderline(); return; }
+    if (!wrap || !cv) { paintSubtext(); return; }
 
     const BG = "#F3EFE6";
 
@@ -653,7 +652,7 @@ function setupBrushReveal() {
           requestAnimationFrame(tick);
         } else {
           cv.remove();
-          setTimeout(drawUnderline, 120);
+          setTimeout(paintSubtext, 120);
         }
       }
       requestAnimationFrame(tick);
@@ -665,7 +664,7 @@ function setupBrushReveal() {
   function paintSubtext() {
     const wrap = document.querySelector(".hero-subtext-wrap");
     const cv   = document.querySelector(".hero-subtext-canvas");
-    if (!wrap || !cv) { revealAllStats(); return; }
+    if (!wrap || !cv) { startBrush(); return; }
 
     const BG = "#F3EFE6";
 
@@ -763,7 +762,7 @@ function setupBrushReveal() {
           requestAnimationFrame(tick);
         } else {
           cv.remove();
-          setTimeout(revealAllStats, 300);
+          setTimeout(startBrush, 300);
         }
       }
       requestAnimationFrame(tick);
@@ -782,8 +781,6 @@ function setupBrushReveal() {
     path.getBoundingClientRect();
     path.style.transition = "stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1)";
     path.style.strokeDashoffset = "0";
-    // After underline finishes, paint in the subtext then reveal stats
-    setTimeout(paintSubtext, 950);
   }
 
   function animateCounters() {
@@ -812,14 +809,22 @@ function setupBrushReveal() {
       const el = card.querySelector(".stat-num");
       if (el) countUp(el, 2000);
     });
+    setTimeout(drawUnderline, 2200);
+  }
+
+  function startBrush() {
+    setTimeout(() => requestAnimationFrame(tick), 300);
   }
 
   function start() {
-    buildGrayCanvas();
-    setTimeout(() => {
-      requestAnimationFrame(tick);
-      animateCounters();
-    }, 300);
+    // Defer one frame so layout is complete before reading dimensions on mobile.
+    requestAnimationFrame(() => {
+      resize();
+      buildGrayCanvas();
+      ctx.globalCompositeOperation = "source-over";
+      ctx.drawImage(grayReady ? grayCanvas : img, 0, 0, canvas.width, canvas.height);
+      setTimeout(paintHeroTitle, 300);
+    });
   }
 
   if (img.complete) {
