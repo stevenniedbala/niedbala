@@ -1208,15 +1208,21 @@ textarea:focus-visible {
 }
 
 
-.hero-subtext-hidden {
-  opacity: 0;
-  transform: translateY(8px);
+.hero-subtext-wrap {
+  position: relative;
+  display: inline-block;
 }
 
-.hero-subtext-visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+.hero-subtext-hidden {
+  visibility: hidden;
+}
+
+.hero-subtext-canvas {
+  position: absolute;
+  inset: -6px -12px;
+  width: calc(100% + 24px);
+  height: calc(100% + 12px);
+  pointer-events: none;
 }
 
 .hero-underline {
