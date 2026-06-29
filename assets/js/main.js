@@ -406,16 +406,24 @@ function setupFadeIn() {
 }
 
 function setupBrushReveal() {
-  const img = document.getElementById("heroIllustration");
-  if (!img) return;
+  const canvas = document.getElementById("brushCanvas");
+  const img    = document.getElementById("heroIllustration");
+  if (!canvas || !img) return;
 
-  const W = 900, H = 420;
-  const offscreen = document.createElement("canvas");
-  offscreen.width = W;
-  offscreen.height = H;
-  const ctx = offscreen.getContext("2d");
+  // Canvas sits on top of the full-color image.
+  // Each frame: draw the image in grayscale onto the canvas, then erase
+  // brushstroke shapes through it — revealing the color layer beneath.
+  // No masks, no stacking context conflicts, works on mobile.
 
-  // Seeded noise: deterministic jagged offsets so edges look hand-painted
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width  = rect.width;
+    canvas.height = rect.height;
+  }
+  resize();
+
+  const ctx = canvas.getContext("2d");
+
   function seededRand(seed) {
     let s = seed;
     return function() {
@@ -424,18 +432,12 @@ function setupBrushReveal() {
     };
   }
 
-  // Draw one brushstroke band up to x=tipX, going left→right (dir=1) or right→left (dir=-1)
-  // centerY and thickness define the band; bristleSeeds give repeatable noise
-  function drawStroke(tipX, centerY, thickness, dir, rand) {
-    ctx.save();
-    ctx.globalCompositeOperation = "source-over";
-
-    const segments = 80;         // how many jagged points along the stroke
-    const bristles = 6;          // extra thin lines for frayed edge feel
+  function eraseStroke(tipX, centerY, thickness, dir, rand) {
+    const W = canvas.width, H = canvas.height;
+    const segments = 80;
+    const bristles = 6;
     const startX = dir === 1 ? -10 : W + 10;
 
-    // Main body — a thick jagged path filled solid
-    ctx.beginPath();
     const topPts = [], botPts = [];
     for (let i = 0; i <= segments; i++) {
       const t = i / segments;
@@ -446,7 +448,11 @@ function setupBrushReveal() {
       botPts.push([x, centerY + halfT + jitter]);
     }
 
-    // Feathered leading edge: taper opacity near tip
+    // Erase the main body — destination-out punches a hole in the cover layer
+    ctx.save();
+    ctx.globalCompositeOperation = "destination-out";
+
+    // Feathered leading edge
     const grad = ctx.createLinearGradient(
       dir === 1 ? tipX - W * 0.12 : tipX + W * 0.12, 0,
       tipX, 0
@@ -457,13 +463,14 @@ function setupBrushReveal() {
     grad.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = grad;
 
+    ctx.beginPath();
     ctx.moveTo(topPts[0][0], topPts[0][1]);
     for (let i = 1; i < topPts.length; i++) ctx.lineTo(topPts[i][0], topPts[i][1]);
     for (let i = botPts.length - 1; i >= 0; i--) ctx.lineTo(botPts[i][0], botPts[i][1]);
     ctx.closePath();
     ctx.fill();
 
-    // Bristle lines along the edges for frayed texture
+    // Bristle lines
     for (let b = 0; b < bristles; b++) {
       const offset = (rand() - 0.5) * thickness * 0.9;
       const bX0 = startX;
@@ -472,9 +479,7 @@ function setupBrushReveal() {
       ctx.moveTo(bX0, centerY + offset);
       for (let i = 1; i <= 20; i++) {
         const t = i / 20;
-        const bx = bX0 + (bX1 - bX0) * t;
-        const by = centerY + offset + (rand() - 0.5) * 8;
-        ctx.lineTo(bx, by);
+        ctx.lineTo(bX0 + (bX1 - bX0) * t, centerY + offset + (rand() - 0.5) * 8);
       }
       ctx.strokeStyle = `rgba(0,0,0,${0.18 + rand() * 0.25})`;
       ctx.lineWidth = 1 + rand() * 2;
@@ -485,68 +490,46 @@ function setupBrushReveal() {
     ctx.restore();
   }
 
-  // 4 strokes: alternating L→R and R→L
-  const strokes = [
-    { centerY: H * 0.17,  thickness: H * 0.29, dir:  1, seed: 1 },
-    { centerY: H * 0.43,  thickness: H * 0.28, dir: -1, seed: 2 },
-    { centerY: H * 0.67,  thickness: H * 0.26, dir:  1, seed: 3 },
-    { centerY: H * 0.88,  thickness: H * 0.24, dir: -1, seed: 4 },
-  ];
-  strokes.forEach(s => s.rand = seededRand(s.seed * 999));
-
-  // Each stroke: 1.4s duration, 1.0s gap between start times
   const strokeDuration = 1400;
   const strokeGap = 1000;
-  const totalDuration = strokeDuration + (strokes.length - 1) * strokeGap;
+  const totalDuration = strokeDuration + 3 * strokeGap;
   let startTime = null;
   let done = false;
-
-  // Hide the color layer until the animation starts
-  img.style.webkitMaskImage = "linear-gradient(black,black)";
-  img.style.maskImage       = "linear-gradient(black,black)";
-  img.style.webkitMaskSize  = "0% 100%";
-  img.style.maskSize        = "0% 100%";
-
-  function applyMask() {
-    const url = offscreen.toDataURL();
-    img.style.webkitMaskImage = `url(${url})`;
-    img.style.maskImage       = `url(${url})`;
-    img.style.webkitMaskSize  = "100% 100%";
-    img.style.maskSize        = "100% 100%";
-  }
 
   function tick(now) {
     if (!startTime) startTime = now;
     const elapsed = now - startTime;
+    const W = canvas.width, H = canvas.height;
 
-    ctx.clearRect(0, 0, W, H);
-    // Re-seed each frame so strokes are deterministic (not random per frame)
-    strokes.forEach(s => s.rand = seededRand(s.seed * 999));
+    // Redraw grayscale image each frame as the cover, then erase stroke areas
+    ctx.globalCompositeOperation = "source-over";
+    ctx.filter = "saturate(0) brightness(1.05)";
+    ctx.drawImage(img, 0, 0, W, H);
+    ctx.filter = "none";
+
+    const strokes = [
+      { centerY: H * 0.17, thickness: H * 0.29, dir:  1, seed: 1 },
+      { centerY: H * 0.43, thickness: H * 0.28, dir: -1, seed: 2 },
+      { centerY: H * 0.67, thickness: H * 0.26, dir:  1, seed: 3 },
+      { centerY: H * 0.88, thickness: H * 0.24, dir: -1, seed: 4 },
+    ];
 
     strokes.forEach((s, i) => {
-      const strokeStart = i * strokeGap;
-      const t = Math.max(0, Math.min(1, (elapsed - strokeStart) / strokeDuration));
+      const t = Math.max(0, Math.min(1, (elapsed - i * strokeGap) / strokeDuration));
       if (t <= 0) return;
-
-      // Ease out cubic
       const eased = 1 - Math.pow(1 - t, 3);
       const tipX = s.dir === 1
         ? -10 + (W + 20) * eased
         : W + 10 - (W + 20) * eased;
-
-      drawStroke(tipX, s.centerY, s.thickness, s.dir, s.rand);
+      eraseStroke(tipX, s.centerY, s.thickness, s.dir, seededRand(s.seed * 999));
     });
-
-    applyMask();
 
     if (elapsed < totalDuration) {
       requestAnimationFrame(tick);
     } else if (!done) {
       done = true;
+      // Fully erase cover — image completely revealed
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = "black";
-      ctx.fillRect(0, 0, W, H);
-      applyMask();
       drawUnderline();
     }
   }
@@ -573,19 +556,25 @@ function setupBrushReveal() {
       function step(now) {
         const t = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - t, 3);
-        const val = Math.round(eased * target);
-        el.textContent = prefix + val + suffix;
+        el.textContent = prefix + Math.round(eased * target) + suffix;
         if (t < 1) requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
     });
   }
 
-  // Start brush and counters together after the same short delay
-  setTimeout(() => {
-    requestAnimationFrame(tick);
-    animateCounters();
-  }, 300);
+  function start() {
+    setTimeout(() => {
+      requestAnimationFrame(tick);
+      animateCounters();
+    }, 300);
+  }
+
+  if (img.complete) {
+    start();
+  } else {
+    img.addEventListener("load", start);
+  }
 }
 
 setupNavigation();

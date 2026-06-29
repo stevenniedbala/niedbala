@@ -1170,19 +1170,13 @@ textarea:focus-visible {
   display: block;
 }
 
-.hero-illustration-base {
-  filter: saturate(0) brightness(1.05);
-}
 
-.hero-illustration-color-wrap {
+#brushCanvas {
   position: absolute;
   inset: 0;
-  display: block;
-}
-
-.hero-illustration-color-wrap img {
   width: 100%;
-  display: block;
+  height: 100%;
+  pointer-events: none;
 }
 
 
