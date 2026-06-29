@@ -424,6 +424,30 @@ function setupBrushReveal() {
 
   const ctx = canvas.getContext("2d");
 
+  // Pre-render a grayscale version of the image into an offscreen canvas.
+  // ctx.filter is not supported on mobile Safari, so we desaturate manually.
+  const grayCanvas = document.createElement("canvas");
+  let grayReady = false;
+  function buildGrayCanvas() {
+    try {
+      grayCanvas.width  = canvas.width;
+      grayCanvas.height = canvas.height;
+      const gc = grayCanvas.getContext("2d");
+      gc.drawImage(img, 0, 0, grayCanvas.width, grayCanvas.height);
+      const imageData = gc.getImageData(0, 0, grayCanvas.width, grayCanvas.height);
+      const d = imageData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const gray = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
+        const brightened = Math.min(255, gray * 1.05);
+        d[i] = d[i+1] = d[i+2] = brightened;
+      }
+      gc.putImageData(imageData, 0, 0);
+      grayReady = true;
+    } catch(e) {
+      grayReady = false;
+    }
+  }
+
   function seededRand(seed) {
     let s = seed;
     return function() {
@@ -503,9 +527,7 @@ function setupBrushReveal() {
 
     // Redraw grayscale image each frame as the cover, then erase stroke areas
     ctx.globalCompositeOperation = "source-over";
-    ctx.filter = "saturate(0) brightness(1.05)";
-    ctx.drawImage(img, 0, 0, W, H);
-    ctx.filter = "none";
+    ctx.drawImage(grayReady ? grayCanvas : img, 0, 0, W, H);
 
     const strokes = [
       { centerY: H * 0.17, thickness: H * 0.29, dir:  1, seed: 1 },
@@ -585,6 +607,7 @@ function setupBrushReveal() {
   }
 
   function start() {
+    buildGrayCanvas();
     setTimeout(() => {
       requestAnimationFrame(tick);
       animateCounters();
