@@ -561,106 +561,109 @@ function setupBrushReveal() {
     const cv   = document.querySelector(".hero-subtext-canvas");
     if (!wrap || !cv) { revealAllStats(); return; }
 
-    // Make text visible underneath — canvas covers it with bone color
     wrap.classList.remove("hero-subtext-hidden");
     const BG = "#F3EFE6";
-    const W = cv.offsetWidth;
-    const H = cv.offsetHeight;
-    cv.width  = W;
-    cv.height = H;
-    const cx = cv.getContext("2d");
-    cx.fillStyle = BG;
-    cx.fillRect(0, 0, W, H);
 
-    // Two strokes: L→R then R→L, each 380ms, 120ms gap
-    const strokeDur = 380;
-    const strokes = [
-      { dir: 1,  centerY: H * 0.35, thickness: H * 0.55, seed: 7 },
-      { dir: -1, centerY: H * 0.72, thickness: H * 0.55, seed: 8 },
-    ];
-    const gap = 120;
-    const total = strokeDur + gap + strokeDur;
-    let st = null;
-
-    function rand(seed) {
-      let s = seed * 999;
-      return function() {
-        s = (s * 1664525 + 1013904223) & 0xffffffff;
-        return (s >>> 0) / 4294967296;
-      };
-    }
-
-    function eraseSubStroke(tipX, centerY, thickness, dir, r) {
-      const startX = dir === 1 ? -4 : W + 4;
-      const segments = 40;
-      const topPts = [], botPts = [];
-      for (let i = 0; i <= segments; i++) {
-        const t = i / segments;
-        const x = startX + (tipX - startX) * t;
-        const jitter = (r() - 0.5) * thickness * 0.28;
-        const halfT  = thickness / 2 + (r() - 0.5) * thickness * 0.15;
-        topPts.push([x, centerY - halfT + jitter]);
-        botPts.push([x, centerY + halfT + jitter]);
-      }
-      cx.save();
-      cx.globalCompositeOperation = "destination-out";
-      const grad = cx.createLinearGradient(
-        dir === 1 ? tipX - W * 0.14 : tipX + W * 0.14, 0, tipX, 0
-      );
-      grad.addColorStop(0, "rgba(0,0,0,1)");
-      grad.addColorStop(0.7, "rgba(0,0,0,0.8)");
-      grad.addColorStop(0.92, "rgba(0,0,0,0.3)");
-      grad.addColorStop(1, "rgba(0,0,0,0)");
-      cx.fillStyle = grad;
-      cx.beginPath();
-      cx.moveTo(topPts[0][0], topPts[0][1]);
-      for (let i = 1; i < topPts.length; i++) cx.lineTo(topPts[i][0], topPts[i][1]);
-      for (let i = botPts.length - 1; i >= 0; i--) cx.lineTo(botPts[i][0], botPts[i][1]);
-      cx.closePath();
-      cx.fill();
-      // bristles
-      for (let b = 0; b < 4; b++) {
-        const off = (r() - 0.5) * thickness * 0.8;
-        cx.beginPath();
-        cx.moveTo(startX, centerY + off);
-        for (let i = 1; i <= 12; i++) {
-          const t = i / 12;
-          cx.lineTo(startX + (tipX - startX) * t, centerY + off + (r() - 0.5) * 5);
-        }
-        cx.strokeStyle = `rgba(0,0,0,${0.2 + r() * 0.2})`;
-        cx.lineWidth = 1 + r() * 1.5;
-        cx.lineCap = "round";
-        cx.stroke();
-      }
-      cx.restore();
-    }
-
-    function tick(now) {
-      if (!st) st = now;
-      const elapsed = now - st;
-
-      cx.globalCompositeOperation = "source-over";
+    function run() {
+      const rect = cv.getBoundingClientRect();
+      const W = Math.round(rect.width)  || wrap.offsetWidth  || 300;
+      const H = Math.round(rect.height) || wrap.offsetHeight || 60;
+      cv.width  = W;
+      cv.height = H;
+      const cx = cv.getContext("2d");
       cx.fillStyle = BG;
       cx.fillRect(0, 0, W, H);
 
-      strokes.forEach((s, i) => {
-        const start = i * (strokeDur + gap);
-        const t = Math.max(0, Math.min(1, (elapsed - start) / strokeDur));
-        if (t <= 0) return;
-        const eased = 1 - Math.pow(1 - t, 3);
-        const tipX = s.dir === 1 ? -4 + (W + 8) * eased : W + 4 - (W + 8) * eased;
-        eraseSubStroke(tipX, s.centerY, s.thickness, s.dir, rand(s.seed));
-      });
+      const strokeDur = 380;
+      const gap = 120;
+      const total = strokeDur * 2 + gap;
+      const strokes = [
+        { dir:  1, centerY: H * 0.35, thickness: H * 0.55, seed: 7 },
+        { dir: -1, centerY: H * 0.72, thickness: H * 0.55, seed: 8 },
+      ];
+      let st = null;
 
-      if (elapsed < total) {
-        requestAnimationFrame(tick);
-      } else {
-        // Done — remove canvas entirely so text is fully clear
-        cv.remove();
-        setTimeout(revealAllStats, 300);
+      function rand(seed) {
+        let s = seed * 999;
+        return function() {
+          s = (s * 1664525 + 1013904223) & 0xffffffff;
+          return (s >>> 0) / 4294967296;
+        };
       }
+
+      function eraseSubStroke(tipX, centerY, thickness, dir, r) {
+        const startX = dir === 1 ? -4 : W + 4;
+        const segments = 40;
+        const topPts = [], botPts = [];
+        for (let i = 0; i <= segments; i++) {
+          const t = i / segments;
+          const x = startX + (tipX - startX) * t;
+          const jitter = (r() - 0.5) * thickness * 0.28;
+          const halfT  = thickness / 2 + (r() - 0.5) * thickness * 0.15;
+          topPts.push([x, centerY - halfT + jitter]);
+          botPts.push([x, centerY + halfT + jitter]);
+        }
+        cx.save();
+        cx.globalCompositeOperation = "destination-out";
+        const grad = cx.createLinearGradient(
+          dir === 1 ? tipX - W * 0.14 : tipX + W * 0.14, 0, tipX, 0
+        );
+        grad.addColorStop(0, "rgba(0,0,0,1)");
+        grad.addColorStop(0.7, "rgba(0,0,0,0.8)");
+        grad.addColorStop(0.92, "rgba(0,0,0,0.3)");
+        grad.addColorStop(1, "rgba(0,0,0,0)");
+        cx.fillStyle = grad;
+        cx.beginPath();
+        cx.moveTo(topPts[0][0], topPts[0][1]);
+        for (let i = 1; i < topPts.length; i++) cx.lineTo(topPts[i][0], topPts[i][1]);
+        for (let i = botPts.length - 1; i >= 0; i--) cx.lineTo(botPts[i][0], botPts[i][1]);
+        cx.closePath();
+        cx.fill();
+        for (let b = 0; b < 4; b++) {
+          const off = (r() - 0.5) * thickness * 0.8;
+          cx.beginPath();
+          cx.moveTo(startX, centerY + off);
+          for (let i = 1; i <= 12; i++) {
+            const t = i / 12;
+            cx.lineTo(startX + (tipX - startX) * t, centerY + off + (r() - 0.5) * 5);
+          }
+          cx.strokeStyle = `rgba(0,0,0,${0.2 + r() * 0.2})`;
+          cx.lineWidth = 1 + r() * 1.5;
+          cx.lineCap = "round";
+          cx.stroke();
+        }
+        cx.restore();
+      }
+
+      function tick(now) {
+        if (!st) st = now;
+        const elapsed = now - st;
+
+        cx.globalCompositeOperation = "source-over";
+        cx.fillStyle = BG;
+        cx.fillRect(0, 0, W, H);
+
+        strokes.forEach(function(s, i) {
+          const strokeStart = i * (strokeDur + gap);
+          const t = Math.max(0, Math.min(1, (elapsed - strokeStart) / strokeDur));
+          if (t <= 0) return;
+          const eased = 1 - Math.pow(1 - t, 3);
+          const tipX = s.dir === 1 ? -4 + (W + 8) * eased : W + 4 - (W + 8) * eased;
+          eraseSubStroke(tipX, s.centerY, s.thickness, s.dir, rand(s.seed));
+        });
+
+        if (elapsed < total) {
+          requestAnimationFrame(tick);
+        } else {
+          cv.remove();
+          setTimeout(revealAllStats, 300);
+        }
+      }
+      requestAnimationFrame(tick);
     }
-    requestAnimationFrame(tick);
+
+    // Wait one frame so layout is complete on mobile before reading dimensions
+    requestAnimationFrame(run);
   }
 
   function drawUnderline() {
