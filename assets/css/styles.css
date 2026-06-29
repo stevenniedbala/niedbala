@@ -216,9 +216,17 @@ textarea:focus-visible {
 }
 
 .logo-img {
-  height: 40px;
+  height: 44px;
+  max-height: 44px;
   width: auto;
   display: block;
+}
+
+@media (max-width: 640px) {
+  .logo-img {
+    height: 34px;
+    max-height: 34px;
+  }
 }
 
 .site-nav {
