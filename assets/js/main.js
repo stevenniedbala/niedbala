@@ -543,23 +543,44 @@ function setupBrushReveal() {
     path.getBoundingClientRect();
     path.style.transition = "stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1)";
     path.style.strokeDashoffset = "0";
+    // After underline finishes, show primary stat first, then secondary cards
+    setTimeout(revealPrimaryStat, 1100);
   }
 
   function animateCounters() {
-    const duration = totalDuration;
-    const els = document.querySelectorAll(".stat-num");
-    els.forEach(el => {
-      const target = parseInt(el.dataset.target, 10);
-      const prefix = el.dataset.prefix || "";
-      const suffix = el.dataset.suffix || "";
-      const start = performance.now();
-      function step(now) {
-        const t = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - t, 3);
-        el.textContent = prefix + Math.round(eased * target) + suffix;
-        if (t < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
+    // no-op during brush animation — counters fire when each card appears
+  }
+
+  function countUp(el, dur) {
+    const target = parseInt(el.dataset.target, 10);
+    const prefix = el.dataset.prefix || "";
+    const suffix = el.dataset.suffix || "";
+    el.textContent = prefix + "0" + suffix;
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = prefix + Math.round(eased * target) + suffix;
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function revealPrimaryStat() {
+    const card = document.querySelector("[data-stat-primary]");
+    if (!card) return;
+    card.classList.remove("stat-card--hidden");
+    card.classList.add("stat-card--visible");
+    countUp(card.querySelector(".stat-num"), 1400);
+    setTimeout(revealSecondaryStats, 700);
+  }
+
+  function revealSecondaryStats() {
+    document.querySelectorAll("[data-stat-reveal]").forEach((card) => {
+      card.classList.remove("stat-card--hidden");
+      card.classList.add("stat-card--visible");
+      const el = card.querySelector(".stat-num");
+      if (el) countUp(el, 1400);
     });
   }
 
