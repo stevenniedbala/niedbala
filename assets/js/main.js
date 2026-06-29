@@ -565,8 +565,15 @@ function setupBrushReveal() {
     path.getBoundingClientRect();
     path.style.transition = "stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1)";
     path.style.strokeDashoffset = "0";
-    // After underline finishes, reveal all stats together
-    setTimeout(revealAllStats, 1100);
+    // After underline finishes, reveal subtext then stats
+    setTimeout(() => {
+      const p = document.querySelector(".hero-subtext-hidden");
+      if (p) {
+        p.classList.remove("hero-subtext-hidden");
+        p.classList.add("hero-subtext-visible");
+      }
+      setTimeout(revealAllStats, 500);
+    }, 950);
   }
 
   function animateCounters() {
