@@ -215,6 +215,12 @@ textarea:focus-visible {
   color: var(--oxblood);
 }
 
+.logo-img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
 .site-nav {
   margin-left: auto;
   display: flex;
