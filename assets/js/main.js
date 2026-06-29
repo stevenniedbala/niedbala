@@ -565,8 +565,8 @@ function setupBrushReveal() {
     path.getBoundingClientRect();
     path.style.transition = "stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1)";
     path.style.strokeDashoffset = "0";
-    // After underline finishes, show primary stat first, then secondary cards
-    setTimeout(revealPrimaryStat, 1100);
+    // After underline finishes, reveal all stats together
+    setTimeout(revealAllStats, 1100);
   }
 
   function animateCounters() {
@@ -588,21 +588,12 @@ function setupBrushReveal() {
     requestAnimationFrame(step);
   }
 
-  function revealPrimaryStat() {
-    const card = document.querySelector("[data-stat-primary]");
-    if (!card) return;
-    card.classList.remove("stat-card--hidden");
-    card.classList.add("stat-card--visible");
-    countUp(card.querySelector(".stat-num"), 1400);
-    setTimeout(revealSecondaryStats, 700);
-  }
-
-  function revealSecondaryStats() {
-    document.querySelectorAll("[data-stat-reveal]").forEach((card) => {
+  function revealAllStats() {
+    document.querySelectorAll(".stat-card").forEach((card) => {
       card.classList.remove("stat-card--hidden");
       card.classList.add("stat-card--visible");
       const el = card.querySelector(".stat-num");
-      if (el) countUp(el, 1400);
+      if (el) countUp(el, 2000);
     });
   }
 
