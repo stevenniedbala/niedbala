@@ -59,19 +59,22 @@
             <canvas id="brushCanvas" aria-hidden="true"></canvas>
           </div>
         </div>
-        <div class="stats-grid">
-          <article class="stat-card stat-card--hidden" data-stat-reveal>
-            <h2><span class="stat-num" data-target="10" data-prefix="$" data-suffix="M+">$0</span></h2>
-            <p>Value Added</p>
-          </article>
-          <article class="stat-card stat-card--hidden" data-stat-primary>
-            <h2><span class="stat-num" data-target="50" data-prefix="" data-suffix="+">0</span></h2>
-            <p>Homes Created</p>
-          </article>
-          <article class="stat-card stat-card--hidden" data-stat-reveal>
-            <h2><span class="stat-num" data-target="15" data-prefix="" data-suffix=" Yrs">0</span></h2>
-            <p>In business</p>
-          </article>
+        <div class="stats-wrap stats-wrap--hidden">
+          <div class="stats-grid">
+            <article class="stat-card" data-stat-reveal>
+              <h2><span class="stat-num" data-target="50" data-prefix="" data-suffix="+">50+</span></h2>
+              <p>Homes Created</p>
+            </article>
+            <article class="stat-card" data-stat-primary>
+              <h2><span class="stat-num" data-target="10" data-prefix="$" data-suffix="M+">$10M+</span></h2>
+              <p>Value Added</p>
+            </article>
+            <article class="stat-card" data-stat-reveal>
+              <h2><span class="stat-num" data-target="15" data-prefix="" data-suffix=" Yrs">15 Yrs</span></h2>
+              <p>In business</p>
+            </article>
+          </div>
+          <canvas class="stats-canvas" aria-hidden="true"></canvas>
         </div>
       </div>
     </section>

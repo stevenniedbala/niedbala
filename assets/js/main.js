@@ -804,11 +804,81 @@ function setupBrushReveal() {
   }
 
   function revealAllStats() {
-    document.querySelectorAll(".stat-card").forEach((card) => {
-      card.classList.remove("stat-card--hidden");
-      card.classList.add("stat-card--visible");
-      const el = card.querySelector(".stat-num");
-      if (el) countUp(el, 1400);
+    const wrap = document.querySelector(".stats-wrap");
+    const cv   = document.querySelector(".stats-canvas");
+    if (!wrap || !cv) return;
+
+    const BG = "#F3EFE6";
+
+    requestAnimationFrame(function run() {
+      const rect = wrap.getBoundingClientRect();
+      const W = Math.round(rect.width)  || wrap.offsetWidth  || 400;
+      const H = Math.round(rect.height) || wrap.offsetHeight || 80;
+      cv.width  = W;
+      cv.height = H;
+      const cx = cv.getContext("2d");
+      cx.fillStyle = BG;
+      cx.fillRect(0, 0, W, H);
+      wrap.classList.remove("stats-wrap--hidden");
+
+      const strokeDur = 600;
+      let st = null;
+
+      function rand(seed) {
+        let s = seed * 999;
+        return function() {
+          s = (s * 1664525 + 1013904223) & 0xffffffff;
+          return (s >>> 0) / 4294967296;
+        };
+      }
+
+      function tick(now) {
+        if (!st) st = now;
+        const elapsed = now - st;
+        const t = Math.max(0, Math.min(1, elapsed / strokeDur));
+        const eased = 1 - Math.pow(1 - t, 3);
+        const tipX = -4 + (W + 8) * eased;
+        const r = rand(13);
+
+        cx.globalCompositeOperation = "source-over";
+        cx.fillStyle = BG;
+        cx.fillRect(0, 0, W, H);
+
+        // Single wide L→R stroke covering full height
+        cx.globalCompositeOperation = "destination-out";
+        const grad = cx.createLinearGradient(tipX - W * 0.12, 0, tipX, 0);
+        grad.addColorStop(0, "rgba(0,0,0,1)");
+        grad.addColorStop(0.65, "rgba(0,0,0,0.85)");
+        grad.addColorStop(0.9, "rgba(0,0,0,0.3)");
+        grad.addColorStop(1, "rgba(0,0,0,0)");
+        cx.fillStyle = grad;
+
+        const segments = 40;
+        const thickness = H * 1.5;
+        const centerY = H * 0.5;
+        const topPts = [], botPts = [];
+        for (let i = 0; i <= segments; i++) {
+          const tx = i / segments;
+          const x = -4 + (tipX + 4) * tx;
+          const jitter = (r() - 0.5) * thickness * 0.05;
+          const halfT  = thickness / 2 + (r() - 0.5) * thickness * 0.03;
+          topPts.push([x, centerY - halfT + jitter]);
+          botPts.push([x, centerY + halfT + jitter]);
+        }
+        cx.beginPath();
+        cx.moveTo(topPts[0][0], topPts[0][1]);
+        for (let i = 1; i < topPts.length; i++) cx.lineTo(topPts[i][0], topPts[i][1]);
+        for (let i = botPts.length - 1; i >= 0; i--) cx.lineTo(botPts[i][0], botPts[i][1]);
+        cx.closePath();
+        cx.fill();
+
+        if (elapsed < strokeDur) {
+          requestAnimationFrame(tick);
+        } else {
+          cv.remove();
+        }
+      }
+      requestAnimationFrame(tick);
     });
   }
 
