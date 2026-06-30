@@ -576,7 +576,7 @@ function setupBrushReveal() {
       const strokeDur = 520;
       const total = strokeDur;
       const strokes = [
-        { dir: -1, centerY: H * 0.5, thickness: H * 1.6, seed: 11 },
+        { dir: 1, centerY: H * 0.5, thickness: H * 1.6, seed: 11 },
       ];
       let st = null;
 
@@ -773,15 +773,7 @@ function setupBrushReveal() {
   }
 
   function drawUnderline() {
-    const path = document.querySelector(".hero-underline-path");
-    if (!path) return;
-    const len = path.getTotalLength();
-    path.style.strokeDasharray = len;
-    path.style.strokeDashoffset = len;
-    path.getBoundingClientRect();
-    path.style.transition = "stroke-dashoffset 0.72s cubic-bezier(0.4, 0, 0.2, 1)";
-    path.style.strokeDashoffset = "0";
-    setTimeout(paintSubtext, 780);
+    paintSubtext();
   }
 
   function animateCounters() {
@@ -856,10 +848,11 @@ function setupBrushReveal() {
         const segments = 40;
         const thickness = H * 1.5;
         const centerY = H * 0.5;
+        const startX = -4;
         const topPts = [], botPts = [];
         for (let i = 0; i <= segments; i++) {
           const tx = i / segments;
-          const x = -4 + (tipX + 4) * tx;
+          const x = startX + (tipX - startX) * tx;
           const jitter = (r() - 0.5) * thickness * 0.05;
           const halfT  = thickness / 2 + (r() - 0.5) * thickness * 0.03;
           topPts.push([x, centerY - halfT + jitter]);
