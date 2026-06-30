@@ -513,8 +513,8 @@ function setupBrushReveal() {
     ctx.restore();
   }
 
-  const strokeDuration = 1400;
-  const strokeGap = 1000;
+  const strokeDuration = 1000;
+  const strokeGap = 630;
   const totalDuration = strokeDuration + 2 * strokeGap;
   let startTime = null;
   let done = false;
@@ -529,9 +529,9 @@ function setupBrushReveal() {
     ctx.drawImage(grayReady ? grayCanvas : img, 0, 0, W, H);
 
     const strokes = [
-      { centerY: H * 0.20, thickness: H * 0.38, dir:  1, seed: 1 },
-      { centerY: H * 0.52, thickness: H * 0.36, dir: -1, seed: 2 },
-      { centerY: H * 0.83, thickness: H * 0.36, dir:  1, seed: 3 },
+      { centerY: H * 0.20, thickness: H * 0.38, dir: -1, seed: 1 },
+      { centerY: H * 0.52, thickness: H * 0.36, dir:  1, seed: 2 },
+      { centerY: H * 0.83, thickness: H * 0.36, dir: -1, seed: 3 },
     ];
 
     strokes.forEach((s, i) => {
@@ -557,7 +557,7 @@ function setupBrushReveal() {
   function paintHeroTitle() {
     const wrap = document.querySelector(".hero-title-wrap");
     const cv   = document.querySelector(".hero-title-canvas");
-    if (!wrap || !cv) { paintSubtext(); return; }
+    if (!wrap || !cv) { drawUnderline(); return; }
 
     const BG = "#F3EFE6";
 
@@ -573,7 +573,7 @@ function setupBrushReveal() {
       cx.fillRect(0, 0, W, H);
       wrap.classList.remove("hero-title-hidden");
 
-      const strokeDur = 700;
+      const strokeDur = 520;
       const total = strokeDur;
       const strokes = [
         { dir: -1, centerY: H * 0.5, thickness: H * 1.6, seed: 11 },
@@ -652,7 +652,7 @@ function setupBrushReveal() {
           requestAnimationFrame(tick);
         } else {
           cv.remove();
-          setTimeout(paintSubtext, 120);
+          setTimeout(drawUnderline, 120);
         }
       }
       requestAnimationFrame(tick);
@@ -680,12 +680,12 @@ function setupBrushReveal() {
       cx.fillRect(0, 0, W, H);
       wrap.classList.remove("hero-subtext-hidden");
 
-      const strokeDur = 380;
+      const strokeDur = 420;
       const gap = 120;
       const total = strokeDur * 2 + gap;
       const strokes = [
-        { dir:  1, centerY: H * 0.35, thickness: H * 0.55, seed: 7 },
-        { dir: -1, centerY: H * 0.72, thickness: H * 0.55, seed: 8 },
+        { dir: -1, centerY: H * 0.35, thickness: H * 0.55, seed: 7 },
+        { dir:  1, centerY: H * 0.72, thickness: H * 0.55, seed: 8 },
       ];
       let st = null;
 
@@ -762,7 +762,7 @@ function setupBrushReveal() {
           requestAnimationFrame(tick);
         } else {
           cv.remove();
-          setTimeout(startBrush, 300);
+          setTimeout(startBrush, 80);
         }
       }
       requestAnimationFrame(tick);
@@ -779,8 +779,9 @@ function setupBrushReveal() {
     path.style.strokeDasharray = len;
     path.style.strokeDashoffset = len;
     path.getBoundingClientRect();
-    path.style.transition = "stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1)";
+    path.style.transition = "stroke-dashoffset 0.72s cubic-bezier(0.4, 0, 0.2, 1)";
     path.style.strokeDashoffset = "0";
+    setTimeout(paintSubtext, 780);
   }
 
   function animateCounters() {
@@ -807,13 +808,12 @@ function setupBrushReveal() {
       card.classList.remove("stat-card--hidden");
       card.classList.add("stat-card--visible");
       const el = card.querySelector(".stat-num");
-      if (el) countUp(el, 2000);
+      if (el) countUp(el, 1400);
     });
-    setTimeout(drawUnderline, 2200);
   }
 
   function startBrush() {
-    setTimeout(() => requestAnimationFrame(tick), 300);
+    requestAnimationFrame(tick);
   }
 
   function start() {
@@ -823,7 +823,7 @@ function setupBrushReveal() {
       buildGrayCanvas();
       ctx.globalCompositeOperation = "source-over";
       ctx.drawImage(grayReady ? grayCanvas : img, 0, 0, canvas.width, canvas.height);
-      setTimeout(paintHeroTitle, 300);
+      setTimeout(paintHeroTitle, 200);
     });
   }
 
